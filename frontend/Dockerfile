@@ -9,10 +9,10 @@ RUN npm install
 COPY . .
 RUN npm run build --prod
 
-# Step 2: Serve with Nginx
+# Step 2: Nginx to serve built Angular app
 FROM nginx:alpine
 
-COPY --from=builder /app/dist/crud-dd-task-mean-app/ /usr/share/nginx/html
+COPY --from=builder /app/dist/angular-15-crud/ /usr/share/nginx/html
 
 EXPOSE 80
 
