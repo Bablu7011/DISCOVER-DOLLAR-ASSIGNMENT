@@ -28,7 +28,7 @@ jobs:
 
       # Build Frontend Image
       - name: Build Frontend Image
-        run: docker build -t babludevops701/mean-frontend:latest ./frontend
+        run: docker build --no-cache -t babludevops701/mean-frontend:latest ./frontend
 
       - name: Push Frontend Image
         run: docker push babludevops701/mean-frontend:latest
