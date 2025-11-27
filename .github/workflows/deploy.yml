@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/mean-devops
+            cd /home/ubuntu/DISCOVER-DOLLAR-ASSIGNMENT
 
             sudo docker pull babludevops701/mean-backend:latest
             sudo docker pull babludevops701/mean-frontend:latest
