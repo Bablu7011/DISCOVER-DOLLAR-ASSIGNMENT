@@ -12,12 +12,8 @@ RUN npm run build
 # Step 2: Nginx to serve built Angular app
 FROM nginx:alpine
 
-# Copy custom nginx config (IMPORTANT)
+COPY --from=builder /app/dist/angular-15-crud/ /usr/share/nginx/html
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# Copy Angular build output
-COPY --from=builder /app/dist/angular-15-crud/ /usr/share/nginx/html
-
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
