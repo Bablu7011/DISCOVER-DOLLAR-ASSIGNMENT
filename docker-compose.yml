@@ -11,7 +11,7 @@ services:
       - "27017:27017"
 
   backend:
-    build: ./backend
+    image: babludevops701/mean-backend:latest
     container_name: backend
     restart: always
     environment:
@@ -20,7 +20,7 @@ services:
       - mongo
 
   frontend:
-    build: ./frontend
+    image: babludevops701/mean-frontend:latest
     container_name: frontend
     restart: always
     expose:
@@ -42,3 +42,4 @@ services:
 
 volumes:
   mongo_data:
+  
