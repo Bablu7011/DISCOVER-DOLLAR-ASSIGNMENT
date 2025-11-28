@@ -26,7 +26,7 @@ jobs:
       - name: Push Backend Image
         run: docker push babludevops701/mean-backend:latest
 
-      # Build Frontend Image
+      # Build Frontend Image (no-cache)
       - name: Build Frontend Image
         run: docker build --no-cache -t babludevops701/mean-frontend:latest ./frontend
 
@@ -41,10 +41,23 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/DISCOVER-DOLLAR-ASSIGNMENT
+            cd /home/ubuntu
 
+            # If folder doesn't exist → clone it
+            if [ ! -d "DISCOVER-DOLLAR-ASSIGNMENT" ]; then
+              git clone https://github.com/Bablu7011/DISCOVER-DOLLAR-ASSIGNMENT.git
+            fi
+            
+            # Move inside project folder
+            cd DISCOVER-DOLLAR-ASSIGNMENT
+
+            # Pull latest code
+            git pull origin main
+
+            # Pull new docker images
             sudo docker pull babludevops701/mean-backend:latest
             sudo docker pull babludevops701/mean-frontend:latest
 
+            # Restart services
             sudo docker-compose down
             sudo docker-compose up -d
