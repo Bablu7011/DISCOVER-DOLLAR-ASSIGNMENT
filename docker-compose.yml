@@ -43,4 +43,5 @@ services:
 
 volumes:
   mongo_data:
+  frontend_build:
 
