@@ -105,7 +105,7 @@ EC2_USER	         ubuntu
 EC2_SSH_KEY	      Contents of your .pem key
 ```
 
-Note: If the EC2 instance is restarted and you have not used an Elastic IP, you have to update the EC2_HOST secret with the new public IP every time.
+I didn’t use an Elastic IP for the EC2 instance, so the public IP changes on every restart. Because of this, the EC2_HOST secret must be updated each time with the new public IP. I used a t2.micro instance to avoid additional costs, so performance may be slow. If needed, you can upgrade the instance type for better performance or attach an Elastic IP to avoid IP changes.
 
 
 5. Running This Project From Scratch
