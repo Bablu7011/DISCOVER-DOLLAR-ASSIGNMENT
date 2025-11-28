@@ -1,21 +1,22 @@
-version: "3.9"
+version: '3.8'
 
 services:
+
   mongo:
     image: mongo:6
     container_name: mongo
     restart: always
-    volumes:
-      - mongo_data:/data/db
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
 
   backend:
     image: babludevops701/mean-backend:latest
     container_name: backend
     restart: always
-    environment:
-      - MONGO_URL=mongodb://mongo:27017/tutorial_db
+    ports:
+      - "8080:8080"
     depends_on:
       - mongo
 
@@ -23,25 +24,10 @@ services:
     image: babludevops701/mean-frontend:latest
     container_name: frontend
     restart: always
-    expose:
-      - "80"
-    depends_on:
-      - backend
-
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    restart: always
     ports:
       - "80:80"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - frontend_build:/usr/share/nginx/html
     depends_on:
-      - frontend
       - backend
 
 volumes:
   mongo_data:
-  frontend_build:
-
