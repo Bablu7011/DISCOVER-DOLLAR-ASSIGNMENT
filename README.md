@@ -1,138 +1,82 @@
-DISCOVER DOLLAR ASSIGNMENT – MEAN STACK (Docker, GitHub Actions, AWS EC2)
-
-This project is a complete MEAN stack application.
-The whole system runs inside Docker containers and deploys automatically using GitHub Actions.
-The application is hosted on an AWS EC2 Ubuntu instance.
-
-The frontend is served through Nginx that is built directly inside the frontend Dockerfile.
-
-1. Project Summary
-
-This application allows users to:
-
-Add a tutorial
-
-View tutorials
-
-Update a tutorial
-
-Delete a tutorial
-
-Technologies used:
-
-Angular
-
-Node.js and Express
-
-MongoDB
-
-Nginx
-
-Docker
-
-Docker Compose
-
-GitHub Actions
-
-AWS EC2
-
-2. Changes and Improvements Made
-A. Frontend Changes
-1. Nginx configuration added
-
-File: frontend/nginx/default.conf
-
-It handles:
-
-Angular routing
-
-Reverse proxy for backend API
-
-Cache control to always load the latest build
-
-2. API URL updated in Angular service
-
-File: frontend/src/app/services/tutorial.service.ts
-
-Changed from:
-
-const baseUrl = 'http://localhost:8080/api/tutorials';
-
-
-To:
-
-const baseUrl = '/api/tutorials';
-
-
-This makes all API requests go through Nginx inside the container.
-
-3. Frontend Dockerfile
-
-Created to:
-
-Build Angular
-
-Serve using Nginx
-
-B. Backend Changes
-1. Backend Dockerfile added
-
-Used to containerize the Express server.
-
-2. MongoDB URL updated
-
-File: backend/app/config/db.config.js
-
-Updated from:
-
-mongodb://localhost:27017/dd_db
-
-
-To:
-
-mongodb://mongo:27017/tutorial_db
-
-
-This connects backend with the MongoDB container.
-
-C. Root Folder Additions
-1. docker-compose.yml
-
-Contains three services:
-
-mongo
-
-backend
-
-frontend (includes Nginx inside its image)
-
-A separate Nginx service is not required.
-
-2. GitHub Actions workflow
-
-File: .github/workflows/deploy.yml
-
-It performs:
-
-Build backend image
-
-Build frontend image with --no-cache
-
-Push both to DockerHub
-
-SSH into EC2
-
-Pull latest GitHub code
-
-Pull latest Docker images
-
-Restart docker-compose
-
-Complete auto-deployment
-
-3. EC2 Setup Instructions
-
-SSH into EC2 and run:
+# 🚀 Discover Dollar Assignment – MEAN Stack
+### Dockerized Application with CI/CD on AWS EC2
+
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
+
+## 📖 Project Summary
+
+This project is a complete **MEAN stack application** (MongoDB, Express, Angular, Node.js) designed to manage tutorials. The entire system is fully containerized using Docker, orchestration is handled by Docker Compose, and deployment to an **AWS EC2** instance is fully automated using **GitHub Actions**.
+
+**Key Features:**
+* Create, Read, Update, and Delete (CRUD) tutorials.
+* Frontend served via **Nginx** (Reverse Proxy).
+* **Zero-downtime** automated deployments.
+* Production-ready folder structure.
+
+---
+
+## 🏗️ Architecture & Changes Implemented
+
+To transition this application from a local development setup to a production-ready cloud deployment, the following changes were engineered:
+
+### 1. Frontend Enhancements (Angular + Nginx)
+* **Custom Nginx Config:** Added `frontend/nginx/default.conf` to handle Angular routing, caching, and reverse proxying `/api` calls to the backend.
+* **Dynamic API Base URL:** Updated `tutorial.service.ts` to use a relative path (`/api/tutorials`) instead of a hardcoded localhost URL. This allows Nginx to route traffic dynamically within the Docker network.
+* **Dockerization:** Created a multi-stage Dockerfile to build the Angular app and serve the static files via Nginx.
+
+### 2. Backend Enhancements (Node.js + MongoDB)
+* **Containerized Database Connection:** Updated `db.config.js` to connect to `mongodb://mongo:27017` instead of `localhost`. This ensures the backend can communicate with the MongoDB container within the internal Docker network.
+
+### 3. Root Configuration (Orchestration & CI/CD)
+* **Docker Compose:** Added `docker-compose.yml` to orchestrate the `backend`, `frontend`, and `mongo` services.
+* **GitHub Actions Workflow:** Added `.github/workflows/deploy.yml`. This pipeline:
+    1.  Builds Frontend & Backend images.
+    2.  Pushes images to Docker Hub.
+    3.  Connects to AWS EC2 via SSH.
+    4.  Pulls the latest code and images.
+    5.  Redeploys the application automatically.
+
+---
+
+## 📂 Folder Structure
+
+```text
+DISCOVER-DOLLAR-ASSIGNMENT/
+│
+├── backend/
+│   ├── app/                # API Logic (Controllers, Models, Routes)
+│   ├── config/             # DB Configuration
+│   ├── Dockerfile          # Backend Image Setup
+│   └── server.js           # Entry Point
+│
+├── frontend/
+│   ├── nginx/
+│   │   └── default.conf    # Nginx Proxy Configuration
+│   ├── src/                # Angular Source Code
+│   ├── Dockerfile          # Frontend Image Setup
+│   └── angular.json
+│
+├── .github/
+│   └── workflows/
+│       └── deploy.yml      # CI/CD Pipeline Configuration
+│
+├── docker-compose.yml      # Service Orchestration
+└── README.md
+
+
+
+🛠️ Setup Instructions
+Phase 1: AWS EC2 Preparation
+Launch an Ubuntu EC2 Instance.
+
+SSH into your instance and run the following commands to install the Docker runtime:
+
+Bash
 
 sudo apt update
 sudo apt install docker.io -y
@@ -140,120 +84,81 @@ sudo apt install docker-compose -y
 sudo usermod -aG docker $USER && newgrp docker
 sudo systemctl enable docker
 sudo systemctl start docker
+Phase 2: GitHub Repository Setup
+Fork or Clone this repository.
 
+Navigate to Settings → Secrets and variables → Actions.
 
-The machine is now ready for deployment.
+Add the following Repository Secrets:
 
-4. GitHub Secrets Required
-
-Go to:
-
-GitHub → Repo → Settings → Secrets → Actions
-
-
-Add the following:
-
-Secret	Description
-DOCKER_USERNAME	DockerHub username
-DOCKER_PASSWORD	DockerHub password/token
-EC2_HOST	EC2 public IP
+Secret Name	Value
+DOCKER_USERNAME	Your Docker Hub Username
+DOCKER_PASSWORD	Your Docker Hub Password (or Access Token)
+EC2_HOST	The Public IP address of your EC2 instance
 EC2_USER	ubuntu
-EC2_SSH_KEY	Content of .pem SSH key
+EC2_SSH_KEY	The content of your .pem private key file
 
-Note
-Since this setup does not use an Elastic IP, after every EC2 stop/start, the public IP changes.
-Update the EC2_HOST secret with the new IP every time.
+Export to Sheets
 
-5. Running This Project From Scratch
-Step 1 — Launch an EC2 instance
+⚠️ Note: If you restart your EC2 instance and are not using an Elastic IP, the Public IP will change. You must update the EC2_HOST secret accordingly.
 
-Install Docker and Docker Compose using the commands above.
+Phase 3: Update Configuration
+Open docker-compose.yml in the root directory.
 
-Step 2 — Fork or clone the repository
-git clone https://github.com/YOUR_USERNAME/DISCOVER-DOLLAR-ASSIGNMENT.git
+Update the image names to match your Docker Hub username (e.g., your-username/repo-name).
 
-Step 3 — Push the project to your GitHub repository
+🚀 How to Deploy
+The deployment process is fully automated.
 
-Update your DockerHub username in:
+Make your changes locally.
 
-docker-compose.yml
+Push your changes to the main branch.
 
-Step 4 — Configure GitHub Secrets
+Bash
 
-Add:
+git add .
+git commit -m "Update application"
+git push origin main
+Go to the Actions tab in GitHub to watch the workflow:
 
-DOCKER_USERNAME
+Builds Docker Images 📦
 
-DOCKER_PASSWORD
+Pushes to Registry ☁️
 
-EC2_HOST
+Deploys to EC2 🚀
 
-EC2_USER
+No manual SSH entry is required after the initial setup.
 
-EC2_SSH_KEY
-
-Step 5 — Push to the main branch
-
-GitHub Actions will automatically:
-
-Build Docker images
-
-Push to DockerHub
-
-SSH into EC2
-
-Pull the latest code
-
-Pull new images
-
-Run docker-compose
-
-Deploy the project
-
-No manual deployment is needed.
-
-6. Folder Structure
-DISCOVER-DOLLAR-ASSIGNMENT/
-│
-├── backend/
-│   ├── app/
-│   ├── Dockerfile
-│
-├── frontend/
-│   ├── nginx/default.conf
-│   ├── src/
-│   ├── Dockerfile
-│
-├── docker-compose.yml
-│
-└── .github/workflows/deploy.yml
-
-7. Testing After Deployment
-Backend API
-curl http://YOUR_EC2_PUBLIC_IP/api/tutorials
+🧪 Testing the Deployment
+Once the GitHub Action completes successfully, access your application:
 
 Frontend
-
-Open in browser:
+Open your browser and navigate to:
 
 http://YOUR_EC2_PUBLIC_IP
+Backend API Health Check
+You can test the API directly using curl:
 
-8. Final Notes
+Bash
 
-This project demonstrates:
+curl http://YOUR_EC2_PUBLIC_IP/api/tutorials
+📝 Final Notes
+This project demonstrates a production-grade workflow integrating:
 
-Complete Dockerization of MEAN stack
+✅ Full Dockerization of a MEAN stack.
 
-Nginx reverse proxy for backend API
+✅ Automated CI/CD using GitHub Actions.
 
-Angular routing fixes with try_files
+✅ Nginx Reverse Proxy for clean routing and security.
 
-Fully automated CI/CD with GitHub Actions
+✅ Self-Healing Deployment (Automatic pulls of latest code/images).
 
-Automatic deployment on EC2 with zero manual steps
+Ready for immediate deployment.
 
-Updated builds using no-cache strategy
 
-Fresh frontend build served through Nginx
 
-The system is clean, simple, and ready to extend.
+
+
+
+
+
