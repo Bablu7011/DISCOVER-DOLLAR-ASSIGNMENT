@@ -26,7 +26,7 @@ jobs:
       - name: Push Backend Image
         run: docker push babludevops701/mean-backend:latest
 
-      # Build Frontend Image (no-cache)
+      # Build Frontend Image (force new build)
       - name: Build Frontend Image
         run: docker build --no-cache -t babludevops701/mean-frontend:latest ./frontend
 
@@ -43,21 +43,27 @@ jobs:
           script: |
             cd /home/ubuntu
 
-            # If folder doesn't exist → clone it
+            # Clone project if not exists
             if [ ! -d "DISCOVER-DOLLAR-ASSIGNMENT" ]; then
               git clone https://github.com/Bablu7011/DISCOVER-DOLLAR-ASSIGNMENT.git
             fi
-            
-            # Move inside project folder
+
             cd DISCOVER-DOLLAR-ASSIGNMENT
 
-            # Pull latest code
+            # Pull updated code
             git pull origin main
 
-            # Pull new docker images
+            echo "Removing old nginx orphan containers..."
+            sudo docker ps -aq --filter "name=nginx" | xargs -r sudo docker rm -f
+
+            echo "Pulling latest Docker images..."
             sudo docker pull babludevops701/mean-backend:latest
             sudo docker pull babludevops701/mean-frontend:latest
 
-            # Restart services
-            sudo docker-compose down
+            echo "Stopping old containers..."
+            sudo docker-compose down --remove-orphans
+
+            echo "Starting new containers..."
             sudo docker-compose up -d
+
+            echo "Deployment Done!"
