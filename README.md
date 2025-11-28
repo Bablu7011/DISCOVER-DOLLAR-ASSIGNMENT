@@ -9,7 +9,7 @@
 
 This project is a complete **MEAN stack application**. The whole system is fully containerized using Docker, and the deployment is automated using GitHub Actions. The application is hosted on an **AWS EC2 Ubuntu instance**.
 
-The frontend is served through Nginx inside the frontend Dockerfile, so a separate Nginx service is not needed in `docker-compose`.
+The frontend is served through Nginx inside the frontend Dockerfile.
 
 ---
 
@@ -123,6 +123,7 @@ Step 2 — Fork or clone this repository locally
 Bash
 
 git clone [https://github.com/YOUR_USERNAME/DISCOVER-DOLLAR-ASSIGNMENT.git](https://github.com/YOUR_USERNAME/DISCOVER-DOLLAR-ASSIGNMENT.git)
+
 Step 3 — Create a GitHub repository and push the project Make sure to update your DockerHub username in docker-compose.yml.
 
 Step 4 — Set all required GitHub Secrets Add: DOCKER_USERNAME, DOCKER_PASSWORD, EC2_HOST, EC2_USER, EC2_SSH_KEY.
@@ -160,6 +161,7 @@ DISCOVER-DOLLAR-ASSIGNMENT/
 ├── docker-compose.yml
 │
 └── .github/workflows/deploy.yml
+
 7. How to Test After Deployment
 From your local machine:
 
